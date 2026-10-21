@@ -74,8 +74,10 @@ async function issueOtp(email) {
       }
     })
   });
+  const replyText = await r.text();
+  console.log('EmailJS reply:', r.status, replyText, '| to:', email);
   if (!r.ok) {
-    console.error('EmailJS error', r.status, await r.text());
+    console.error('EmailJS error', r.status, replyText);
     await q('update pending set last_sent=0 where email=$1', [email]);
     return { status: 502, error: 'Could not send the code email. Please try again shortly.' };
   }
