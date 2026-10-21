@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#12161b">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F6F0E3">
 <title>Daily Time Record | OJT hours tracker</title>
 <meta name="description" content="Log your OJT or practicum shifts, deduct breaks automatically, and track progress toward your required hours.">
-
+<script>try{document.documentElement.dataset.auth=localStorage.getItem('dtr_session_v1')?'in':'out'}catch(e){document.documentElement.dataset.auth='out'}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    color-scheme:dark;
+    color-scheme:light;
     --paper:#12161b;
     --paper-line:rgba(255,255,255,0.08);
     --ink:#EDEAE2;
     --ink-soft:#A9A596;
     --margin-red:#E8705F;
-    --seal-green:#5FBF7F;
-    --gold:#E0A93B;
+    --seal-green:#2F8A57;
+    --gold:#C9971F;
     --card:#1B2128;
     --danger:#E8705F;
     --line-strong:rgba(237,234,226,0.28);
@@ -309,7 +309,7 @@
     font-family:'IBM Plex Mono', monospace;
     font-size:0.62rem;
     color:var(--gold);
-    border:1px solid rgba(224,169,59,0.5);
+    border:1px solid rgba(138,100,16,0.5);
     padding:0 0.3rem;
     margin-left:0.35rem;
     white-space:nowrap;
@@ -458,9 +458,9 @@
       padding:0.85rem 0.9rem;
       margin-bottom:0.7rem;
       border:1px solid var(--line-strong);
-      background:rgba(255,255,255,0.03);
+      background:rgba(255,255,255,0.6);
     }
-    tbody tr:hover{ background:rgba(255,255,255,0.03); }
+    tbody tr:hover{ background:rgba(255,255,255,0.6); }
     tbody td{ display:block; padding:0; border:none; min-width:0; word-break:break-word; }
     tbody td[data-label]::before{
       content:attr(data-label);
@@ -510,8 +510,6 @@
 
   /* ===== Landing + auth ===== */
   [hidden]{display:none !important;}
-  html:not([data-auth]) .app-shell, html:not([data-auth]) #landing{visibility:hidden;}
-  #saveState{text-transform:none;letter-spacing:0.02em;margin-left:0.9rem;}
   html[data-auth="out"] .app-shell{display:none;}
   html[data-auth="in"] #landing{display:none;}
   :focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
@@ -532,7 +530,7 @@
   .btn-ghost:hover{border-color:var(--ink);}
   .hero-note{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--ink-soft);margin:1.1rem 0 0;}
 
-  .preview{margin:0;background:var(--card);border:1px solid var(--line-strong);padding:1.3rem;transform:rotate(1.2deg);box-shadow:0 18px 40px rgba(0,0,0,0.35);}
+  .preview{margin:0;background:var(--card);border:1px solid var(--line-strong);padding:1.3rem;transform:rotate(1.2deg);box-shadow:0 14px 34px rgba(90,70,30,0.15);}
   .pv-top{display:flex;align-items:center;gap:1.1rem;padding-bottom:1rem;border-bottom:2px solid var(--ink);margin-bottom:0.3rem;}
   .pv-ring{position:relative;width:84px;height:84px;flex-shrink:0;}
   .pv-ring svg{width:100%;height:100%;display:block;}
@@ -552,7 +550,7 @@
   .ln-foot{margin-top:2rem;font:0.72rem 'IBM Plex Mono',monospace;color:var(--ink-soft);}
 
   dialog#authDlg{border:1px solid var(--line-strong);background:var(--card);color:var(--ink);padding:0;width:min(430px,calc(100vw - 2rem));max-height:calc(100dvh - 2rem);}
-  dialog#authDlg::backdrop{background:rgba(8,10,13,0.72);backdrop-filter:blur(3px);}
+  dialog#authDlg::backdrop{background:rgba(60,48,28,0.45);backdrop-filter:blur(3px);}
   .auth-card{padding:1.6rem;position:relative;}
   .auth-x{position:absolute;top:0.7rem;right:0.8rem;background:none;color:var(--ink-soft);font-size:1.4rem;line-height:1;padding:0.2rem 0.4rem;}
   .auth-x:hover{color:var(--margin-red);}
@@ -578,6 +576,84 @@
     .line{grid-template-columns:1fr;gap:0.4rem;}
   }
   @media (prefers-reduced-motion:reduce){ .pv-arc{transition:none;} }
+
+  /* ===== Cream theme + refinements ===== */
+  :root{
+    color-scheme:light;
+    --paper:#F6F0E3; --paper-line:rgba(90,70,30,0.09); --ink:#2E2B25; --ink-soft:#6B665A;
+    --margin-red:#B8432F; --seal-green:#25744A; --gold:#8A6410; --card:#FCF9F1;
+    --line-strong:rgba(46,43,37,0.22); --row-hover:rgba(90,70,30,0.05); --subtotal-bg:rgba(90,70,30,0.07);
+    --input-bg:#FFFDF7; --input-line:#CFC6B0; --ring-track:#E4DAC4; --radius:14px;
+  }
+  html{-webkit-text-size-adjust:100%;}
+  body{min-height:100vh;min-height:100dvh;overflow-x:hidden;}
+  body::after{
+    background-image:
+      radial-gradient(900px 520px at 88% -8%, rgba(47,138,87,0.08), transparent 60%),
+      radial-gradient(700px 520px at -5% 105%, rgba(196,80,60,0.07), transparent 60%),
+      linear-gradient(var(--paper-line) 1px, transparent 1px);
+    background-size:auto, auto, 100% 2.15rem;
+  }
+  .margin-rule{background:rgba(184,67,47,0.35);}
+  h1{font-size:clamp(1.7rem,6.5vw,2.4rem);}
+  .greet{margin:0.4rem 0 0;color:var(--ink-soft);font-size:0.98rem;}
+
+  .btn-add{color:var(--paper);border-radius:10px;transition:background 0.18s, transform 0.18s;}
+  .btn-add:hover{transform:translateY(-1px);}
+  .btn-ghost{border-radius:10px;}
+  .seal circle:first-child, .pv-ring circle:first-child{stroke:var(--ring-track);}
+  .seal svg{filter:drop-shadow(0 0 12px rgba(47,138,87,0.20));}
+  .panel{border-radius:var(--radius);box-shadow:0 8px 24px rgba(90,70,30,0.10);}
+  .panel h2{font-size:1.3rem;text-transform:none;letter-spacing:0;}
+  .stat-cards{background:none;border:0;gap:0.8rem;}
+  .stat{border:1px solid var(--line-strong);border-top:3px solid var(--ink-soft);border-radius:12px;}
+  .stat.done{border-top-color:var(--seal-green);}
+  .stat.remaining{border-top-color:var(--margin-red);}
+  .field input, .edit-input{border-radius:8px;}
+  .field input{-webkit-appearance:none;appearance:none;min-height:42px;}
+  input[type="date"], input[type="time"]{display:block;min-width:0;line-height:1.2;text-align:left;}
+  ::-webkit-date-and-time-value{text-align:left;}
+  .break-tag{border-radius:999px;padding:0 0.45rem;}
+  .preview{border-radius:16px;}
+  dialog#authDlg{border-radius:18px;}
+
+  .brand-strip{gap:0.6rem;flex-wrap:wrap;}
+  #userTag{position:relative;padding:0.4rem 0.9rem 0.4rem 1.7rem;background:var(--card);border:1px solid var(--line-strong);border-radius:999px;color:var(--ink);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #userTag::before{content:"";position:absolute;left:0.75rem;top:50%;width:0.5rem;height:0.5rem;margin-top:-0.25rem;border-radius:50%;background:var(--seal-green);}
+  #logoutBtn{border:1px solid var(--line-strong);border-radius:999px;padding:0.4rem 0.95rem;text-decoration:none;font-size:0.72rem;color:var(--ink);}
+  #logoutBtn:hover{border-color:var(--margin-red);color:var(--margin-red);}
+
+  /* ---- layout fixes between desktop and phone ---- */
+  @media (max-width:820px){ .status-row{grid-template-columns:1fr;justify-items:center;gap:1.5rem;} }
+  @media (min-width:561px) and (max-width:820px){
+    .stat-cards{grid-template-columns:repeat(3,1fr);}
+    .stat{display:block;}
+    .stat .k{white-space:normal;}
+  }
+  @media (max-width:560px){ .stat-cards{grid-template-columns:1fr;} }
+  @media (max-width:760px){ form.entry-form .btn-add{grid-column:1/-1;} }
+  @media (max-width:700px){
+    .margin-rule{display:none;}
+    .wrap{padding:max(1.1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0 max(1rem, env(safe-area-inset-left));}
+    footer.page-foot{padding:1.2rem 1rem 0;}
+    .ln{padding:max(1.1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 2rem max(1rem, env(safe-area-inset-left));}
+    #userTag{flex:0 1 auto;min-width:0;}
+  }
+  @media (max-width:640px){
+    tbody tr{border-radius:12px;}
+    .hero-cta .btn-add, .hero-cta .btn-ghost{flex:1 1 100%;width:100%;text-align:center;}
+    .ln-nav{flex-wrap:wrap;}
+  }
+  @media (max-width:420px){
+    .ln-brand{font-size:1.05rem;}
+    .ln-nav-actions{gap:0.9rem;}
+    .preview{padding:1rem;}
+    .pv-top{gap:0.8rem;}
+    .pv-top h2{font-size:1.3rem;}
+    .pv-row{grid-template-columns:auto 1fr auto;gap:0.5rem;font-size:0.7rem;}
+    .auth-card{padding:1.3rem;}
+  }
+  @media (prefers-reduced-motion:reduce){ .btn-add{transition:none;} .btn-add:hover{transform:none;} }
 </style>
 </head>
 <body>
@@ -607,7 +683,7 @@
         <div class="pv-ring">
           <svg viewBox="0 0 100 100" aria-hidden="true">
             <circle cx="50" cy="50" r="42" fill="none" stroke="#2A323C" stroke-width="8"/>
-            <circle class="pv-arc" cx="50" cy="50" r="42" fill="none" stroke="#5FBF7F" stroke-width="8" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+            <circle class="pv-arc" cx="50" cy="50" r="42" fill="none" stroke="#2F8A57" stroke-width="8" stroke-linecap="round" transform="rotate(-90 50 50)"/>
           </svg>
           <b>62%</b>
         </div>
@@ -628,14 +704,14 @@
     <div class="line"><h3>Your target, tracked</h3><p>Set the hours your school requires and watch the ring fill as you add entries.</p></div>
     <div class="line"><h3>Edit and export</h3><p>Fix any entry later, then download the whole record as a CSV when your hours are done.</p></div>
   </section>
-  <p class="ln-foot">Your record is saved to your account, so it follows you to any device.</p>
+  <p class="ln-foot">Your entries are saved in this browser, separately for each account.</p>
 </main>
 
 <div class="app-shell">
 <div class="wrap">
 
   <div class="brand-strip">
-    <div class="brand-tag" id="userTag"></div><div class="brand-tag" id="saveState"></div>
+    <div class="brand-tag" id="userTag"></div>
     <button class="link-btn" id="logoutBtn">Log out</button>
   </div>
 
@@ -643,6 +719,7 @@
     <div class="title-block">
       <div class="eyebrow">OJT / Practicum Trainee Portal</div>
       <h1>Daily Time Record</h1>
+      <p class="greet" id="greet"></p>
     </div>
     <div class="id-fields">
       <div class="name-field">
@@ -660,7 +737,7 @@
     <div class="seal">
       <svg viewBox="0 0 170 170">
         <circle cx="85" cy="85" r="72" fill="none" stroke="#2A323C" stroke-width="10"/>
-        <circle id="progressRing" cx="85" cy="85" r="72" fill="none" stroke="#5FBF7F" stroke-width="10"
+        <circle id="progressRing" cx="85" cy="85" r="72" fill="none" stroke="#2F8A57" stroke-width="10"
                 stroke-linecap="round" stroke-dasharray="452.4" stroke-dashoffset="452.4"
                 transform="rotate(-90 85 85)"/>
       </svg>
@@ -737,7 +814,7 @@
     <div class="footer-actions">
       <div class="hint"></div>
       <div style="display:flex; gap:1.2rem;">
-        <button class="link-btn" id="exportBtn">Export CSV</button>
+        <button class="link-btn" id="exportBtn"></button>
         <button class="link-btn" id="clearBtn" style="color:var(--margin-red);">Clear all entries</button>
       </div>
     </div>
@@ -787,135 +864,161 @@
   </div>
 </dialog>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
 <script>
 (function(){
+  // ====== EmailJS settings: paste your own values here ======
+  const EMAILJS = {
+    publicKey:  'deyj_x1nuMJdotNPe',
+    serviceId:  'service_7ceyq8r',
+    templateId: 'template_rgbn19r'
+  };
+  // ==========================================================
+
+  const OTP_TTL = 5 * 60 * 1000, RESEND_MS = 30 * 1000, MAX_TRIES = 5;
+  const ACC = 'dtr_accounts_v1', SES = 'dtr_session_v1';
   const $ = id => document.getElementById(id);
-  const RESEND_MS = 30 * 1000;
+  const rd = (k, f) => { try{ const r = localStorage.getItem(k); return r === null ? f : JSON.parse(r); }catch(e){ return f; } };
+  const wr = (k, v) => { try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
 
-  async function api(method, url, body){
-    const r = await fetch(url, { method, headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined });
-    const j = await r.json().catch(() => ({}));
-    if(!r.ok){ const e = new Error(j.error || 'Something went wrong. Please try again.'); e.status = r.status; throw e; }
-    return j;
+  const session = rd(SES, null);
+  window.__session = session;
+  if(session){
+    $('userTag').textContent = session.name;
+    const hr = new Date().getHours();
+    $('greet').textContent = 'Good ' + (hr < 12 ? 'morning' : hr < 18 ? 'afternoon' : 'evening') + ', ' + session.name.split(' ')[0] + '.';
+    $('logoutBtn').onclick = () => { try{ localStorage.removeItem(SES); }catch(e){} location.reload(); };
+    return;
   }
 
-  // ---- Saving the tracker's data to the server (called by the app on every change) ----
-  let timer, dirty = false;
-  const setState = s => { const e = $('saveState'); if(e) e.textContent = s; };
-  async function flush(keep){
-    if(!dirty) return;
-    dirty = false;
+  requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.add('ready')));
+
+  const enc = s => new TextEncoder().encode(s);
+  const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+  const rnd = n => hex(crypto.getRandomValues(new Uint8Array(n)));
+  const sha = async s => hex(await crypto.subtle.digest('SHA-256', enc(s)));
+  async function pbkdf(pw, salt){
+    const k = await crypto.subtle.importKey('raw', enc(pw), 'PBKDF2', false, ['deriveBits']);
+    return hex(await crypto.subtle.deriveBits({ name:'PBKDF2', salt:enc(salt), iterations:150000, hash:'SHA-256' }, k, 256));
+  }
+
+  const dlg = $('authDlg');
+  const msg = (t, ok) => { const m = $('authMsg'); m.textContent = t || ''; m.className = 'auth-msg' + (ok ? ' ok' : ''); };
+  const busy = (form, on) => { const b = form.querySelector('button[type=submit]'); b.disabled = on; };
+  function show(view){
+    ['signup', 'login', 'otp'].forEach(v => $('v-' + v).hidden = v !== view);
+    $('tabs').hidden = view === 'otp';
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === view)));
+    msg('');
+  }
+  document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => { show(b.dataset.open); dlg.showModal(); });
+  document.querySelectorAll('.tab').forEach(t => t.onclick = () => show(t.dataset.view));
+  $('authClose').onclick = () => dlg.close();
+  dlg.addEventListener('input', () => msg(''));
+  dlg.addEventListener('click', e => { if(e.target === dlg) dlg.close(); });
+
+  let pending = null, timer;
+
+  async function sendOtp(){
+    if(Object.values(EMAILJS).some(v => v.startsWith('YOUR_'))) throw new Error('cfg');
+    emailjs.init({ publicKey: EMAILJS.publicKey });
+    const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
+    const s = rnd(8);
+    pending.otpSalt = s;
+    pending.otpHash = await sha(s + code);
+    pending.exp = Date.now() + OTP_TTL;
+    pending.tries = 0;
+    pending.last = Date.now();
+    await emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, {
+      to_email: pending.email, email: pending.email,
+      to_name: pending.name, name: pending.name,
+      otp_code: code, passcode: code,
+      expires_in: '5 minutes',
+      time: new Date(pending.exp).toLocaleTimeString([], { hour:'numeric', minute:'2-digit' }),
+      app_name: 'Daily Time Record'
+    });
+  }
+  function sendError(err){
+    if(err && err.message === 'cfg') return 'Email sending is not set up yet. Add your EmailJS keys in index.html.';
+    if(err && err.text) return 'Could not send the code: ' + err.text;
+    return 'Could not send the code. Check your connection and try again.';
+  }
+  function cooldown(){
+    clearInterval(timer);
+    const b = $('otpResend');
+    const tick = () => {
+      const s = Math.ceil((pending.last + RESEND_MS - Date.now()) / 1000);
+      b.disabled = s > 0;
+      b.textContent = s > 0 ? 'Resend in ' + s + 's' : 'Send a new code';
+      if(s <= 0) clearInterval(timer);
+    };
+    tick(); timer = setInterval(tick, 500);
+  }
+
+  $('v-signup').onsubmit = async e => {
+    e.preventDefault();
+    const name = $('suName').value.trim(), email = $('suEmail').value.trim().toLowerCase(), pw = $('suPw').value;
+    if(name.length < 2) return msg('Enter your full name.');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return msg('Enter a valid email address.');
+    if(pw.length < 8) return msg('Password must be at least 8 characters.');
+    if(rd(ACC, {})[email]) return msg('This email already has an account. Use the Log in tab.');
+    busy(e.target, true); msg('Sending your code…', true);
     try{
-      const r = await fetch('/api/data', { method:'PUT', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ data: window.__data }), keepalive: !!keep });
-      if(r.status === 401){ location.reload(); return; }
-      if(!r.ok) throw new Error();
-      setState('Saved');
-    }catch(e){ dirty = true; setState('Not saved. Retrying…'); setTimeout(() => flush(), 4000); }
-  }
-  window.__persist = () => { dirty = true; setState('Saving…'); clearTimeout(timer); timer = setTimeout(flush, 500); };
-  addEventListener('pagehide', () => flush(true));
+      const salt = rnd(16);
+      pending = { name, email, salt, hash: await pbkdf(pw, salt) };
+      await sendOtp();
+      $('otpTo').textContent = email;
+      $('otpCode').value = '';
+      show('otp'); cooldown(); $('otpCode').focus();
+    }catch(err){ pending = null; msg(sendError(err)); }
+    busy(e.target, false);
+  };
 
-  // ---- Signed-out: landing page + dialog ----
-  function setupLanding(){
-    document.documentElement.dataset.auth = 'out';
-    requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.add('ready')));
-
-    const dlg = $('authDlg');
-    const msg = (t, ok) => { const m = $('authMsg'); m.textContent = t || ''; m.className = 'auth-msg' + (ok ? ' ok' : ''); };
-    const busy = (form, on) => { form.querySelector('button[type=submit]').disabled = on; };
-    function show(view){
-      ['signup', 'login', 'otp'].forEach(v => $('v-' + v).hidden = v !== view);
-      $('tabs').hidden = view === 'otp';
-      document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === view)));
-      msg('');
+  $('v-otp').onsubmit = async e => {
+    e.preventDefault();
+    const code = $('otpCode').value.trim();
+    if(!pending) return show('signup');
+    if(Date.now() > pending.exp) return msg('This code has expired. Send a new one.');
+    if(pending.tries >= MAX_TRIES) return msg('Too many wrong attempts. Send a new code.');
+    if(!/^\d{6}$/.test(code)) return msg('Enter the 6-digit code.');
+    if(await sha(pending.otpSalt + code) !== pending.otpHash){
+      pending.tries++;
+      return msg('Wrong code. ' + (MAX_TRIES - pending.tries) + ' tries left.');
     }
-    document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => { show(b.dataset.open); dlg.showModal(); });
-    document.querySelectorAll('.tab').forEach(t => t.onclick = () => show(t.dataset.view));
-    $('authClose').onclick = () => dlg.close();
-    dlg.addEventListener('click', e => { if(e.target === dlg) dlg.close(); });
+    const a = rd(ACC, {});
+    a[pending.email] = { name: pending.name, salt: pending.salt, hash: pending.hash, created: Date.now() };
+    wr(ACC, a);
+    wr(SES, { id: pending.email, name: pending.name });
+    msg('Verified. Opening your record…', true);
+    setTimeout(() => location.reload(), 600);
+  };
+  $('otpBack').onclick = () => show('signup');
+  $('otpResend').onclick = async () => {
+    if(!pending) return show('signup');
+    try{ await sendOtp(); msg('A new code is on its way.', true); cooldown(); }
+    catch(err){ msg(sendError(err)); }
+  };
 
-    let email = '', sentAt = 0, tick;
-    function cooldown(){
-      clearInterval(tick);
-      const b = $('otpResend');
-      const run = () => {
-        const s = Math.ceil((sentAt + RESEND_MS - Date.now()) / 1000);
-        b.disabled = s > 0;
-        b.textContent = s > 0 ? 'Resend in ' + s + 's' : 'Send a new code';
-        if(s <= 0) clearInterval(tick);
-      };
-      run(); tick = setInterval(run, 500);
-    }
-
-    $('v-signup').onsubmit = async e => {
-      e.preventDefault();
-      const name = $('suName').value.trim(), em = $('suEmail').value.trim().toLowerCase(), pw = $('suPw').value;
-      if(name.length < 2) return msg('Enter your full name.');
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return msg('Enter a valid email address.');
-      if(pw.length < 8) return msg('Password must be at least 8 characters.');
-      busy(e.target, true); msg('Sending your code…', true);
-      try{
-        await api('POST', '/api/signup/start', { name, email: em, password: pw });
-        email = em; sentAt = Date.now();
-        $('otpTo').textContent = em; $('otpCode').value = '';
-        show('otp'); cooldown(); $('otpCode').focus();
-      }catch(err){ msg(err.message); }
-      busy(e.target, false);
-    };
-
-    $('v-otp').onsubmit = async e => {
-      e.preventDefault();
-      const code = $('otpCode').value.trim();
-      if(!/^\d{6}$/.test(code)) return msg('Enter the 6-digit code.');
-      busy(e.target, true);
-      try{
-        await api('POST', '/api/signup/verify', { email, code });
-        msg('Verified. Opening your record…', true);
-        setTimeout(() => location.reload(), 500);
-      }catch(err){ msg(err.message); busy(e.target, false); }
-    };
-    $('otpBack').onclick = () => show('signup');
-    $('otpResend').onclick = async () => {
-      try{ await api('POST', '/api/signup/resend', { email }); sentAt = Date.now(); msg('A new code is on its way.', true); cooldown(); }
-      catch(err){ msg(err.message); }
-    };
-
-    $('v-login').onsubmit = async e => {
-      e.preventDefault();
-      busy(e.target, true);
-      try{
-        await api('POST', '/api/login', { email: $('liEmail').value.trim().toLowerCase(), password: $('liPw').value });
-        location.reload();
-      }catch(err){ msg(err.message); busy(e.target, false); }
-    };
-  }
-
-  // ---- Boot: ask the server who is logged in ----
-  (async () => {
-    let me = null;
-    try{ me = await api('GET', '/api/me'); }catch(e){ /* not logged in */ }
-    if(!me) return setupLanding();
-    try{
-      window.__data = (await api('GET', '/api/data')).data || {};
-    }catch(e){
-      document.documentElement.dataset.auth = 'out';
-      return setupLanding();
-    }
-    window.__session = me;
-    document.documentElement.dataset.auth = 'in';
-    $('userTag').textContent = 'Signed in as ' + me.name;
-    $('logoutBtn').onclick = async () => { await flush(); try{ await api('POST', '/api/logout'); }catch(e){} location.reload(); };
-    window.__startApp();
-  })();
+  $('v-login').onsubmit = async e => {
+    e.preventDefault();
+    const email = $('liEmail').value.trim().toLowerCase(), pw = $('liPw').value;
+    const u = rd(ACC, {})[email];
+    busy(e.target, true);
+    const ok = u && await pbkdf(pw, u.salt) === u.hash;
+    busy(e.target, false);
+    if(!ok) return msg('Email or password is incorrect, or this account was created on another device.');
+    wr(SES, { id: email, name: u.name });
+    location.reload();
+  };
 })();
 </script>
 <script>
-window.__startApp = function(){
-  const S = window.__session;
-  const STORAGE_KEY = 'dtr_entries_v1';
-  const TARGET_KEY = 'dtr_target_v1';
-  const NAME_KEY = 'dtr_name_v1';
-  const COMPANY_KEY = 'dtr_company_v1';
+(function(){
+  const S = window.__session; if(!S) return;
+  const STORAGE_KEY = 'dtr_entries_v1:' + S.id;
+  const TARGET_KEY = 'dtr_target_v1:' + S.id;
+  const NAME_KEY = 'dtr_name_v1:' + S.id;
+  const COMPANY_KEY = 'dtr_company_v1:' + S.id;
 
   const els = {
     form: document.getElementById('entryForm'),
@@ -942,12 +1045,14 @@ window.__startApp = function(){
   const BREAK_MINUTES = 60; // automatic 1-hour break deducted from every shift
 
   function load(key, fallback){
-    const v = window.__data[key];
-    return v === undefined ? fallback : v;
+    try{
+      const raw = localStorage.getItem(key);
+      if(raw === null) return fallback;
+      return JSON.parse(raw);
+    }catch(e){ return fallback; }
   }
   function save(key, value){
-    window.__data[key] = value;
-    window.__persist();
+    try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
   }
 
   let entries = load(STORAGE_KEY, []);
@@ -1197,7 +1302,7 @@ window.__startApp = function(){
     const offset = RING_CIRCUMFERENCE * (1 - pct);
     els.ring.setAttribute('stroke-dasharray', RING_CIRCUMFERENCE.toFixed(1));
     els.ring.setAttribute('stroke-dashoffset', offset.toFixed(1));
-    els.ring.setAttribute('stroke', pct >= 1 ? '#E0A93B' : '#5FBF7F');
+    els.ring.setAttribute('stroke', pct >= 1 ? '#C9971F' : '#2F8A57');
   }
 
   function escapeHtml(str){
@@ -1207,7 +1312,7 @@ window.__startApp = function(){
   }
 
   render();
-};
+})();
 </script>
 </body>
 </html>
