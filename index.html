@@ -848,6 +848,7 @@
       <div class="field"><label for="liEmail">Email</label><input id="liEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
       <div class="field"><label for="liPw">Password</label><input id="liPw" type="password" autocomplete="current-password"></div>
       <button type="submit" class="btn-add">Log in</button>
+      <div class="otp-actions"><button type="button" class="link-btn" id="goForgot">Forgot password?</button></div>
     </form>
 
     <form class="auth-form" id="v-otp" novalidate hidden>
@@ -857,6 +858,25 @@
       <div class="otp-actions">
         <button type="button" class="link-btn" id="otpBack">Change email</button>
         <button type="button" class="link-btn" id="otpResend">Send a new code</button>
+      </div>
+    </form>
+
+    <form class="auth-form" id="v-forgot" novalidate hidden>
+      <div><h2>Forgot your password?</h2><p class="sub">Enter your account email and we'll send a 6-digit code.</p></div>
+      <div class="field"><label for="fpEmail">Email</label><input id="fpEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
+      <button type="submit" class="btn-add">Send reset code</button>
+      <div class="otp-actions"><button type="button" class="link-btn" id="fpBack">Back to log in</button></div>
+    </form>
+
+    <form class="auth-form" id="v-reset" novalidate hidden>
+      <div><h2>Check your email</h2><p class="sub">We sent a 6-digit code to <b id="rsTo"></b>. It expires in 5 minutes.</p></div>
+      <div class="field"><label for="rsCode">Reset code</label><input class="otp" id="rsCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000"></div>
+      <div class="field"><label for="rsPw">New password</label><input id="rsPw" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div>
+      <div class="field"><label for="rsPw2">Confirm new password</label><input id="rsPw2" type="password" autocomplete="new-password"></div>
+      <button type="submit" class="btn-add">Reset password</button>
+      <div class="otp-actions">
+        <button type="button" class="link-btn" id="rsBack">Change email</button>
+        <button type="button" class="link-btn" id="rsResend">Send a new code</button>
       </div>
     </form>
 
@@ -872,6 +892,12 @@
     publicKey:  'deyj_x1nuMJdotNPe',
     serviceId:  'service_7ceyq8r',
     templateId: 'template_rgbn19r'
+  };
+  // Password-reset emails use their own EmailJS service, template and key
+  const EMAILJS_RESET = {
+    publicKey:  '0ei-9M10Y6XHMF2o1',
+    serviceId:  'service_d9uip0n',
+    templateId: 'template_4pj0ih9'
   };
   // ==========================================================
 
@@ -906,8 +932,8 @@
   const msg = (t, ok) => { const m = $('authMsg'); m.textContent = t || ''; m.className = 'auth-msg' + (ok ? ' ok' : ''); };
   const busy = (form, on) => { const b = form.querySelector('button[type=submit]'); b.disabled = on; };
   function show(view){
-    ['signup', 'login', 'otp'].forEach(v => $('v-' + v).hidden = v !== view);
-    $('tabs').hidden = view === 'otp';
+    ['signup', 'login', 'otp', 'forgot', 'reset'].forEach(v => $('v-' + v).hidden = v !== view);
+    $('tabs').hidden = !['signup', 'login'].includes(view);
     document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === view)));
     msg('');
   }
@@ -943,11 +969,11 @@
     if(err && err.text) return 'Could not send the code: ' + err.text;
     return 'Could not send the code. Check your connection and try again.';
   }
-  function cooldown(){
+  function cooldown(btnId, st){
     clearInterval(timer);
-    const b = $('otpResend');
+    const b = $(btnId);
     const tick = () => {
-      const s = Math.ceil((pending.last + RESEND_MS - Date.now()) / 1000);
+      const s = Math.ceil((st.last + RESEND_MS - Date.now()) / 1000);
       b.disabled = s > 0;
       b.textContent = s > 0 ? 'Resend in ' + s + 's' : 'Send a new code';
       if(s <= 0) clearInterval(timer);
@@ -969,7 +995,7 @@
       await sendOtp();
       $('otpTo').textContent = email;
       $('otpCode').value = '';
-      show('otp'); cooldown(); $('otpCode').focus();
+      show('otp'); cooldown('otpResend', pending); $('otpCode').focus();
     }catch(err){ pending = null; msg(sendError(err)); }
     busy(e.target, false);
   };
@@ -995,7 +1021,73 @@
   $('otpBack').onclick = () => show('signup');
   $('otpResend').onclick = async () => {
     if(!pending) return show('signup');
-    try{ await sendOtp(); msg('A new code is on its way.', true); cooldown(); }
+    try{ await sendOtp(); msg('A new code is on its way.', true); cooldown('otpResend', pending); }
+    catch(err){ msg(sendError(err)); }
+  };
+
+  // ----- forgot password -----
+  let rst = null;   // reset in progress (kept in memory only)
+  async function sendReset(){
+    if(Object.values(EMAILJS_RESET).some(v => v.startsWith('YOUR_'))) throw new Error('cfg');
+    const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
+    const s = rnd(8), exp = Date.now() + OTP_TTL;
+    await emailjs.send(EMAILJS_RESET.serviceId, EMAILJS_RESET.templateId, {
+      to_email: rst.email, email: rst.email,
+      to_name: rst.name, name: rst.name,
+      otp_code: code, passcode: code,
+      expires_in: '5 minutes',
+      time: new Date(exp).toLocaleTimeString([], { hour:'numeric', minute:'2-digit' }),
+      app_name: 'Daily Time Record',
+      purpose: 'reset your password'
+    }, { publicKey: EMAILJS_RESET.publicKey });
+    // only remember the new code once the email actually went out
+    rst.otpSalt = s; rst.otpHash = await sha(s + code); rst.exp = exp; rst.tries = 0; rst.last = Date.now();
+  }
+  $('goForgot').onclick = () => { const v = $('liEmail').value.trim(); show('forgot'); if(v) $('fpEmail').value = v; $('fpEmail').focus(); };
+  $('fpBack').onclick = () => show('login');
+  $('v-forgot').onsubmit = async e => {
+    e.preventDefault();
+    const email = $('fpEmail').value.trim().toLowerCase();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return msg('Enter a valid email address.');
+    const u = rd(ACC, {})[email];
+    if(!u) return msg('No account with this email was found on this device. Accounts are saved per browser, so try the device where you signed up.');
+    busy(e.target, true); msg('Sending your code…', true);
+    try{
+      rst = { email, name: u.name, last: 0 };
+      await sendReset();
+      $('rsTo').textContent = email;
+      ['rsCode', 'rsPw', 'rsPw2'].forEach(id => $(id).value = '');
+      show('reset'); cooldown('rsResend', rst); $('rsCode').focus();
+    }catch(err){ rst = null; msg(sendError(err)); }
+    busy(e.target, false);
+  };
+  $('v-reset').onsubmit = async e => {
+    e.preventDefault();
+    if(!rst || !rst.otpHash) return show('forgot');
+    const code = $('rsCode').value.trim(), pw = $('rsPw').value, pw2 = $('rsPw2').value;
+    if(Date.now() > rst.exp) return msg('This code has expired. Send a new one.');
+    if(rst.tries >= MAX_TRIES) return msg('Too many wrong attempts. Send a new code.');
+    if(!/^\d{6}$/.test(code)) return msg('Enter the 6-digit code.');
+    if(pw.length < 8) return msg('Password must be at least 8 characters.');
+    if(pw !== pw2) return msg('Passwords do not match.');
+    busy(e.target, true);
+    if(await sha(rst.otpSalt + code) !== rst.otpHash){
+      rst.tries++; busy(e.target, false);
+      return msg('Wrong code. ' + (MAX_TRIES - rst.tries) + ' tries left.');
+    }
+    const a = rd(ACC, {}), u = a[rst.email];
+    if(!u){ busy(e.target, false); rst = null; return msg('This account is no longer on this device.'); }
+    u.salt = rnd(16); u.hash = await pbkdf(pw, u.salt);
+    wr(ACC, a);
+    const email = rst.email; rst = null;
+    busy(e.target, false);
+    show('login'); $('liEmail').value = email; $('liPw').value = '';
+    msg('Password updated. Log in with your new password.', true);
+  };
+  $('rsBack').onclick = () => show('forgot');
+  $('rsResend').onclick = async () => {
+    if(!rst) return show('forgot');
+    try{ await sendReset(); msg('A new code is on its way.', true); cooldown('rsResend', rst); }
     catch(err){ msg(sendError(err)); }
   };
 
